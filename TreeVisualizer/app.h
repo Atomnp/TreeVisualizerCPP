@@ -117,7 +117,7 @@ public:
     void ClearScreen() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 200, 125, 0, 100);
     }
     void render() {
         //this was for test fo moving animation

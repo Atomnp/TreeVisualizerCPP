@@ -99,7 +99,7 @@ public:
 
         SDL_RenderFillCircle(renderer, rect.x + rectWidth / 2, rect.y + rectHeight / 2, rectHeight / 2+5);
         SDL_RenderCopy(renderer, message, NULL, &rect);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 200, 125, 0, 100);
         //free surface and texture
         SDL_FreeSurface(surfaceMessage);
         SDL_DestroyTexture(message);
@@ -128,6 +128,9 @@ public:
                 if (prevHeight != node->height) {
                     xOffset = 0;
                     prevHeight = node->height;
+                }
+                if (node->height < 0 or node->height>10) {
+                    __debugbreak;
                 }
                 auto p = getPosition(node->height, xOffset);
                 getRectangle(rect, p.x, p.y, rectWidth, rectHeight);
@@ -167,7 +170,7 @@ public:
                     Point to = Point(parentX, p.y - VerticalGap);
                     SDL_RenderDrawLine(renderer, from.x, from.y, to.x, to.y);
                 }
-                SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+                SDL_SetRenderDrawColor(renderer, 200, 125, 0, 100);
 
             }
         }
