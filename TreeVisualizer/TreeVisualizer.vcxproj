@@ -144,6 +144,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="AVL.h" />
+    <ClInclude Include="AVLGraph.h" />
     <ClInclude Include="bst.h" />
     <ClInclude Include="BSTGraph.h" />
     <ClInclude Include="info.h" />
@@ -249,7 +251,7 @@
     <ClInclude Include="vendors\SDL2\SDL2-2.0.12\include\SDL_vulkan.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rbt_test.cpp" />
+    <ClCompile Include="avl_test.cpp" />
     <ClCompile Include="vendors\imgui\imgui.cpp" />
     <ClCompile Include="vendors\imgui\imgui_demo.cpp" />
     <ClCompile Include="vendors\imgui\imgui_draw.cpp" />

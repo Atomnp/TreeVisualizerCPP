@@ -327,6 +327,12 @@
     <ClInclude Include="RedBlackTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AVLGraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AVL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vendors\imgui\imgui.cpp">
@@ -350,7 +356,7 @@
     <ClCompile Include="vendors\imgui\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rbt_test.cpp">
+    <ClCompile Include="avl_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

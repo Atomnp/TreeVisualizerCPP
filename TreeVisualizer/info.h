@@ -22,12 +22,14 @@ static const int SORTING_MENU_HEIGHT = SCREEN_HEIGHT - CONTROL_MENU_HEIGHT;
 //};
 class Node;
 class RBTNode;
+class AVLNode;
 namespace info {
 	int currentInsertingItem;
 	bool done = false;
 	bool treeThreadActive=false;
 	Node* currentNode;
 	RBTNode* rbtnode;
+	AVLNode* avlNode;
 	int timeMilli;
 	int windowFlags = 0;
 	std::string displayMessage = "Binary Search Tree";
