@@ -11,6 +11,7 @@
 //    bg.moveAndAnimate(rec, Point(500, 500));
 //}
 
+
 void createTree(BST& bst) {
     //all this drama is to produce a tree whose height is less than 5 otherwise it wont fit on screen
     /*info::timeMilli = 0;
@@ -29,12 +30,12 @@ void createTree(BST& bst) {
 
     //actual tree creation code
     std::vector<int>arr = { 47, 94, 8, 75, 47, 23, 23, 14, 48, 90 };
-    info::timeMilli = 100;
+    info::timeMilli = 10;
     for (auto elm : arr) {
         bst.insert(elm);
-    }
-    
+    } 
 }
+
 void insertItem(BST &bst,int value) {
     bst.insert(value);
     info::currentNode = nullptr;
@@ -80,7 +81,7 @@ void App::run() {
                 info::timeMilli = 0;
                 t1.join();
             }
-            info::timeMilli = 1000;
+            info::timeMilli = 10;
             t1 = std::thread(insertItem,std::ref(bst),valueToInsert);
             }
 
@@ -93,7 +94,7 @@ void App::run() {
                     info::timeMilli = 0;
                     t1.join();
                 }
-                info::timeMilli = 1000;
+                info::timeMilli = 10;
                 t1 = std::thread(removeItem, std::ref(bst), valueToRemove);
             }           
             ImGui::End();

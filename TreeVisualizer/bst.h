@@ -6,30 +6,29 @@
 #include <mutex>
 #include "info.h"
 
-
+struct Node {
+	int data;
+	Node* left;
+	Node* right;
+	Node(int x) :data(x) {
+		left = nullptr;
+		right = nullptr;
+	}
+};
 
 class BST {
 
 private:	
 	int count;
-	int tempHeight;
-
 private:
 	Node* deleteMinimum(Node* node,int &toReturn) {
 		if (node->left == nullptr) {
 			toReturn = node->data;
-			decreeMentHeight(node->right);
 			return node->right;	
 		}	 
 		node->left=deleteMinimum(node->left, toReturn);
 		return node;	
 
-	}
-	void decreeMentHeight(Node* node) {
-		if (node == nullptr)return;
-		node->height--;
-		decreeMentHeight(node->left);
-		decreeMentHeight(node->right);
 	}
 	int max(int a, int b) {
 		return a >= b ? a : b;
@@ -45,17 +44,14 @@ private:
 		info::currentNode = r;
 		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		if (r == nullptr) {
-			Node* newNode = new Node(x,tempHeight);
-			tempHeight = 1;
+			Node* newNode = new Node(x);
 			return newNode;
 		}
 		else if (x < r->data) {
-			tempHeight++;
 			r->left = insert(r->left, x);
 			
 		}
 		else {
-			tempHeight++;
 			r->right = insert(r->right, x);
 			
 		}
@@ -81,7 +77,6 @@ private:
 			//when the node being deleted has only one child
 			if (r->left == nullptr or r->right == nullptr) {
 				Node* toReturn = maxof(r->left, r->right);
-				decreeMentHeight(toReturn);
 				delete r;
 				return toReturn;
 			}
@@ -96,64 +91,19 @@ private:
 public:
 	int getCount() { return count; }
 	Node* root;
-	BST() :root(nullptr), count(0),tempHeight(1) {}
+	BST() :root(nullptr), count(0) {}
 	void insert(int x) {
-		tempHeight = 1;
-		if (root == nullptr) {
-			root = new Node(x,tempHeight);
-		}
-		else {
-			info::currentNode = root;
-			std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
-			if (x < root->data) {
-				tempHeight++;
-				root->left = insert(root->left, x);
-				
-			}
-			else {
-				tempHeight++;
-				root->right = insert(root->right, x);
-
-				
-			}
-		}
+		root=insert(root, x);
 		count++;
 	}
 	void remove(int x) {
-		if (root == nullptr) {
-			std::cout << "cant remove form empty tree" << std::endl;
-		}
-		else if(x!=root->data) {
-			info::currentNode = root;
-			if (x < root->data) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
-				root->left = remove(root->left, x);
-			}
-			else {
-				std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
-				root->right = remove(root->right, x);
-			}
-		}
-		else {
-			if (root->left == nullptr or root->right == nullptr) {
-				Node* max = maxof(root->left, root->right);
-				decreeMentHeight(max);
-				delete root;
-				root = max;
-			}
-			else root->right = deleteMinimum(root->right, root->data);
-			
-		}
+		root=remove(root, x);
 		count--;
 	}
 	void clear() {
 		while (count != 0) {
 			remove(root->data);
 		}
-	}
-	int heightOf(Node* node) {
-		if (node == nullptr)return -1;
-		return node->height;
 	}
 	int height(Node* node) {
 		if (node == nullptr)return 0;
