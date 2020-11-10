@@ -106,11 +106,19 @@ public:
 		x->left = singleLeftRotate(x->left);
 		return singleRightRotate(x);
 	}
+	//AVLNode* deleteMinimum(AVLNode* node, int& toReturn) {
+	//	if (node->left == nullptr) {
+	//		
+	//	}
+	//	node->left =remove(node->left, toReturn);
+	//	return node;
+
+	//}
 	AVLNode* findMin(AVLNode* t) {
 		if (t == nullptr)
 			return nullptr;
 		else if (t->left == nullptr)
-			return t;
+			return t;		
 		else
 			return findMin(t->left);
 	}
@@ -127,42 +135,47 @@ public:
 	AVLNode* remove(AVLNode* x, int n) {
 		info::avlNode = x;
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		std::cout << "height ar remove top height of  " << x->data << "=" << height(x) << std::endl;
-		std::cout << "this is remove definition from avl.cpp" << std::endl;
+		//std::cout << "height ar remove top height of  " << x->data << "=" << height(x) << std::endl;
+		//std::cout << "this is remove definition from avl.cpp" << std::endl;
 		//when element is not found in the tree
 		if (x == nullptr)return nullptr;
 
 		//when delete node key is less then key we are current standing at search left
 		if (n < x->data) {
 			x->left = remove(x->left, n);
+			info::deleting = false;
 		}
 		//when delete node key is greater then key we are current standing at search right
 		else if (n > x->data) {
 			x->right = remove(x->right, n);
+			info::deleting = false;
 		}
 		//when we find the deleting node
 		else {
 			//if both child are present
 			if (x->left && x->right) {
 				AVLNode* temp = x;
-				x->right->left = x->left->right;
-				x->left->right = x->right;
-				x = x->left;
-				delete temp;
+				auto min = findMin(x->right);
+				x->data = min->data;
+				x->right=remove(x->right, min->data);
+				info::deleting = false;
 			}
 			//when deleting node is leaf node
 			else if (x->left == nullptr and x->right == nullptr) {
+				info::deleting = true;
 				delete x;
 				return nullptr;
 			}
 			//when only right child is present
 			else if (x->left == nullptr) {
+				info::deleting = true;
 				AVLNode* temp = x;
 				x = x->right;
 				delete temp;
 			}
 			//when only left child is present
 			else if (x->right == nullptr) {
+				info::deleting = true;
 				AVLNode* temp = x;
 				x = x->left;
 				delete temp;
@@ -171,10 +184,10 @@ public:
 		}
 		x->height = max(height(x->left), height(x->right)) + 1;
 
-		std::cout << "before balancing after removal" << std::endl;
-		std::cout << "x->data=" << x->data << std::endl;
-		std::cout << "left height" << height(x->left) << std::endl;
-		std::cout << "right height" << height(x->right) << std::endl;
+		//std::cout << "before balancing after removal" << std::endl;
+		//std::cout << "x->data=" << x->data << std::endl;
+		//std::cout << "left height" << height(x->left) << std::endl;
+		//std::cout << "right height" << height(x->right) << std::endl;
 		//std::cout << "x->left.da=" << x->data << std::endl;
 		//std::cout << "x->data=" << x->data << std::endl;
 		//now we have to balance the tree;
@@ -203,9 +216,10 @@ public:
 			//now i may have to do rr rotate or rl rotate
 			if (height(x->right->right) > height(x->right->left)) {
 				//perform ll rotate
+
 				x = singleLeftRotate(x);
 			}
-			else if (height(x->left->left) < height(x->left->right)) {
+			else if (height(x->right->right) < height(x->right->left)) {
 				//perform ll rotate
 				x = doubleLeftRotate(x);
 			}

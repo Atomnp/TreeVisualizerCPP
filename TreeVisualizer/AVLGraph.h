@@ -64,6 +64,7 @@ public:
     }
     void draw(AVL& avl, SDL_Renderer* renderer) {
         //if there is no item in the avl
+        if (info::deleting)return;
         if (avl.root == nullptr or info::deleting)return;
 
         treeHeight = 5;
@@ -90,6 +91,7 @@ public:
         int maxCount = pow(2, treeHeight) - 1;
         int count = 1;
         while (count < maxCount) {
+            if (info::deleting)return;
             auto node = queue.front();
             queue.pop();
 
