@@ -39,9 +39,11 @@ public:
     }
 
     //height from top or root
+    //calculates what should be the gap between nodes at given height
     int gapAtHeight(int h) {
         return lastGap * pow(2, treeHeight - h + 1);
     }
+    //calculate initial offset of the each height
     int initialOffsetAT(int height) {
 
         if (height == treeHeight)return 0;
@@ -50,6 +52,7 @@ public:
         }
         return initialOffsetAT(height + 1) + (rectWidth + (gapAtHeight(height + 1))) / 2 - rectWidth / 2;
     }
+    //returns the position of the node based on its count
     Point getPos(int count) {
         //1,2,3 represent count this function calculates position based on its count
         //                 1
@@ -71,7 +74,6 @@ public:
         if (!info::treeThreadActive)return;
 
         //for message display
-
         SDL_Rect rec;
         surfaceMessage = TTF_RenderText_Solid(font, std::to_string(info::currentInsertingItem).c_str(), color);
         message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
@@ -88,9 +90,14 @@ public:
         std::queue<AVLNode*>queue;
         queue.push(avl.root);
 
+
+        //maximum amount of nodes possible in given height
+        //we store all those in queeue also null ptr because nullptr helps us in determining the x position
         int maxCount = pow(2, treeHeight) - 1;
+        //count statring from one to sync with getPost function
         int count = 1;
         while (count < maxCount) {
+            //to avoid deleted pointer being referene
             if (info::deleting)return;
             auto node = queue.front();
             queue.pop();
@@ -103,7 +110,13 @@ public:
                 auto p = getPos(count);
                 getRectangle(rect, p.x, p.y, rectWidth, rectHeight);
 
-                surfaceMessage = TTF_RenderText_Solid(font, std::to_string(node->data).c_str(), color);
+                try {
+                    surfaceMessage = TTF_RenderText_Solid(font, std::to_string(node->data).c_str(), color);
+                }
+                catch (std::exception e) {
+                    printf("exception thrown");
+                    return;
+                }
                 message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
                 if (node == info::avlNode) {
@@ -121,26 +134,23 @@ public:
                 queue.push(node->right);
 
                 if (node == info::avlNode) SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255);
-                //if (node->isRed) SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
-                //left to right
+
+                //this code is for drawing the line based on the count of the node
+                //left to right (/)
                 if (count % 2 == 0) {
                     Point from = Point(p.x + rectWidth, p.y);
                     int countOfParent = count / 2;
                     Point ParentPos = getPos(countOfParent);
                     Point to = Point(ParentPos.x, ParentPos.y + rectHeight);
-                    /* int parentX = from.x + (gapAtHeight(node->height) - rectWidth) / 2 - rectWidth / 2;*/
-                     //Point to = Point(parentX, p.y - VerticalGap);
                     SDL_RenderDrawLine(renderer, from.x, from.y, to.x, to.y);
                 }
+                //to draw line from right to left (\)
                 else {
                     Point from = Point(p.x, p.y);
                     int countOfParent = count / 2;
-                    //not to draw line at the top of root node
                     if (countOfParent > 0) {
                         Point ParentPos = getPos(countOfParent);
                         Point to = Point(ParentPos.x + rectWidth, ParentPos.y + rectHeight);
-                        /*  int parentX = from.x - (gapAtHeight(node->height) - rectWidth) / 2 + rectWidth / 2;
-                          Point to = Point(parentX, p.y - VerticalGap);*/
                         SDL_RenderDrawLine(renderer, from.x, from.y, to.x, to.y);
                     }
 

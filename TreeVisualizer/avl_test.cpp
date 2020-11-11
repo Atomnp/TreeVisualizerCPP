@@ -7,7 +7,7 @@
 #undef main
 
 void createTree(AVL& bst) {
-    std::vector<int>arr = { 47, 94, 8, 75, 47, 23, 23, 14, 48, 90 };
+    std::vector<int>arr = { 14, 90 };
     info::timeMilli = 10;
     for (auto elm : arr) {
         bst.insert(elm);

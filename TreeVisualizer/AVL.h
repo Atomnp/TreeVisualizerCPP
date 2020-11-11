@@ -17,7 +17,6 @@ struct AVLNode {
 	}
 };
 
-
 class AVL
 {
 	
@@ -35,6 +34,7 @@ public:
 	}
 	void remove(int n) {
 		root=remove(root, n);
+		info::deleting = false;
 	}
 	
 	AVLNode* insert(AVLNode* x, int n) {
@@ -46,28 +46,28 @@ public:
 		else if (n <= x->data) {
 			x->left = insert(x->left, n);
 
-			if (height(x->left) - height(x->right) >= 2) {
-				//item was inserted to left of left
-				if (n <= x->left->data) {
-					x = singleRightRotate(x);
-				}
-				else {
-					x = doubleRightRotate(x);
-				}
-			}
 		}
 		else if (n > x->data) {
 			x->right = insert(x->right, n);
-
-			if (height(x->right) - height(x->left) >= 2) {
-				//item was inserted to left of left
-				if (n > x->right->data) {
-					x = singleLeftRotate(x);
-				}
-				else {
-					x = doubleLeftRotate(x);
-				}
+			
+		if (height(x->left) - height(x->right) >= 2) {
+			//item was inserted to left of left
+			if (n <= x->left->data) {
+				x = singleRightRotate(x);
 			}
+			else {
+				x = doubleRightRotate(x);
+			}
+		}
+		if (height(x->right) - height(x->left) >= 2) {
+			//item was inserted to left of left
+			if (n > x->right->data) {
+				x = singleLeftRotate(x);
+			}
+			else {
+				x = doubleLeftRotate(x);
+			}
+		}
 		}
 		x->height = max(height(x->left), height(x->right)) + 1;
 		//std::cout << "heignt of " <<" root "<<"="<<height(root)<< std::endl;
@@ -112,8 +112,8 @@ public:
 	//	}
 	//	node->left =remove(node->left, toReturn);
 	//	return node;
-
 	//}
+
 	AVLNode* findMin(AVLNode* t) {
 		if (t == nullptr)
 			return nullptr;
@@ -155,20 +155,25 @@ public:
 			//if both child are present
 			if (x->left && x->right) {
 				AVLNode* temp = x;
-				auto min = findMin(x->right);
-				x->data = min->data;
-				x->right=remove(x->right, min->data);
+				auto minNode = findMin(x->right);
+				x->data = minNode->data;
+				x->right=remove(x->right, minNode->data);
 				info::deleting = false;
 			}
 			//when deleting node is leaf node
 			else if (x->left == nullptr and x->right == nullptr) {
 				info::deleting = true;
-				delete x;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				AVLNode* temp = x;
+				x = nullptr;
+				delete temp;
+				
 				return nullptr;
 			}
 			//when only right child is present
 			else if (x->left == nullptr) {
 				info::deleting = true;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				AVLNode* temp = x;
 				x = x->right;
 				delete temp;
@@ -176,6 +181,7 @@ public:
 			//when only left child is present
 			else if (x->right == nullptr) {
 				info::deleting = true;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				AVLNode* temp = x;
 				x = x->left;
 				delete temp;
@@ -183,7 +189,6 @@ public:
 
 		}
 		x->height = max(height(x->left), height(x->right)) + 1;
-
 		//std::cout << "before balancing after removal" << std::endl;
 		//std::cout << "x->data=" << x->data << std::endl;
 		//std::cout << "left height" << height(x->left) << std::endl;
@@ -203,7 +208,7 @@ public:
 				x = singleRightRotate(x);
 			}
 			if (height(x->left->left) < height(x->left->right)) {
-				//perform ll rotate
+				//perform lR rotate
 				x = doubleRightRotate(x);
 			}
 		}
@@ -215,12 +220,12 @@ public:
 
 			//now i may have to do rr rotate or rl rotate
 			if (height(x->right->right) > height(x->right->left)) {
-				//perform ll rotate
+				//perform rr rotate
 
 				x = singleLeftRotate(x);
 			}
 			else if (height(x->right->right) < height(x->right->left)) {
-				//perform ll rotate
+				//perform RL rotate
 				x = doubleLeftRotate(x);
 			}
 		}
