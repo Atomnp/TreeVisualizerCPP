@@ -6,28 +6,29 @@
 #include "app.h"
 #undef main
 
-void createTree(AVL& bst) {
-    std::vector<int>arr = { 14, 90 };
+void createTree(AVL& avl) {
+    std::vector<int>arr =generateRandomArray(20);
+    printArray(arr);
     info::timeMilli = 10;
     for (auto elm : arr) {
-        bst.insert(elm);
+        avl.insert(elm);
     }
 }
 
-void insertItem(AVL& bst, int value) {
-    bst.insert(value);
+void insertItem(AVL& avl, int value) {
+    avl.insert(value);
     info::currentNode = nullptr;
 }
-void removeItem(AVL& bst, int value) {
-    bst.remove(value);
+void removeItem(AVL& avl, int value) {
+    avl.remove(value);
     info::currentNode = nullptr;
 }
 void App::run() {
 
-    AVL bst;
+    AVL avl;
     AVLGraph bg;
     if (!info::treeThreadActive) {
-        t1 = std::thread(createTree, std::ref(bst));
+        t1 = std::thread(createTree, std::ref(avl));
         info::treeThreadActive = true;
     }
     SDL_Rect rec = { 100,100,100,100 };
@@ -36,7 +37,7 @@ void App::run() {
 
         handleEvents();
         ClearScreen();
-        bg.draw(bst, renderer);
+        bg.draw(avl, renderer);
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(window);
@@ -60,7 +61,7 @@ void App::run() {
                 t1.join();
             }
             info::timeMilli = 10;
-            t1 = std::thread(insertItem, std::ref(bst), valueToInsert);
+            t1 = std::thread(insertItem, std::ref(avl), valueToInsert);
         }
 
         static int valueToRemove = 0;
@@ -73,7 +74,7 @@ void App::run() {
                 t1.join();
             }
             info::timeMilli = 10;
-            t1 = std::thread(removeItem, std::ref(bst), valueToRemove);
+            t1 = std::thread(removeItem, std::ref(avl), valueToRemove);
         }
         ImGui::End();
 

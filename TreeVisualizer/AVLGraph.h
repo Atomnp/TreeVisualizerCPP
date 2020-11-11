@@ -66,11 +66,11 @@ public:
         return Point(x, y);
     }
     void draw(AVL& avl, SDL_Renderer* renderer) {
-        //if there is no item in the avl
-        if (info::deleting)return;
-        if (avl.root == nullptr or info::deleting)return;
-
+        //can only animate up to 5 tree height
         treeHeight = 5;
+        //if there is no item in the av
+        if (avl.root == nullptr)return;
+       
         if (!info::treeThreadActive)return;
 
         //for message display
@@ -92,12 +92,12 @@ public:
 
 
         //maximum amount of nodes possible in given height
-        //we store all those in queeue also null ptr because nullptr helps us in determining the x position
+        //we store all those in queue also null ptr because nullptr helps us in determining the x position
         int maxCount = pow(2, treeHeight) - 1;
-        //count statring from one to sync with getPost function
+        //count starting from one to sync with getPost function
         int count = 1;
         while (count < maxCount) {
-            //to avoid deleted pointer being referene
+            //to avoid deleted pointer being reference
             if (info::deleting)return;
             auto node = queue.front();
             queue.pop();

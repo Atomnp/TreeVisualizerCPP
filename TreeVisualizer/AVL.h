@@ -43,13 +43,16 @@ public:
 		if (x == nullptr) {
 			x = new AVLNode(n);
 		}
+		//if item being inserted is less than current node insert it its left sub tree
 		else if (n <= x->data) {
 			x->left = insert(x->left, n);
-
 		}
+		//if item being inserted is greater then insert in the right subtree
 		else if (n > x->data) {
 			x->right = insert(x->right, n);
-			
+		}
+		x->height = max(height(x->left), height(x->right)) + 1;
+
 		if (height(x->left) - height(x->right) >= 2) {
 			//item was inserted to left of left
 			if (n <= x->left->data) {
@@ -59,17 +62,16 @@ public:
 				x = doubleRightRotate(x);
 			}
 		}
-		if (height(x->right) - height(x->left) >= 2) {
-			//item was inserted to left of left
+		else if (height(x->right) - height(x->left) >= 2) {
+			//item was to the right of right
 			if (n > x->right->data) {
 				x = singleLeftRotate(x);
 			}
+			//item was inserted to the left of right
 			else {
 				x = doubleLeftRotate(x);
 			}
 		}
-		}
-		x->height = max(height(x->left), height(x->right)) + 1;
 		//std::cout << "heignt of " <<" root "<<"="<<height(root)<< std::endl;
 		return x;
 	}
@@ -106,13 +108,6 @@ public:
 		x->left = singleLeftRotate(x->left);
 		return singleRightRotate(x);
 	}
-	//AVLNode* deleteMinimum(AVLNode* node, int& toReturn) {
-	//	if (node->left == nullptr) {
-	//		
-	//	}
-	//	node->left =remove(node->left, toReturn);
-	//	return node;
-	//}
 
 	AVLNode* findMin(AVLNode* t) {
 		if (t == nullptr)
@@ -135,8 +130,6 @@ public:
 	AVLNode* remove(AVLNode* x, int n) {
 		info::avlNode = x;
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		//std::cout << "height ar remove top height of  " << x->data << "=" << height(x) << std::endl;
-		//std::cout << "this is remove definition from avl.cpp" << std::endl;
 		//when element is not found in the tree
 		if (x == nullptr)return nullptr;
 
@@ -198,10 +191,9 @@ public:
 		//now we have to balance the tree;
 		if (height(x->left) - height(x->right) >= 2) {
 			//when left has more height than right
-			//we have to rotate 3 node one is x
-			//other is higher children of x
-			//next is higher children of higher children of x
-
+			//we have to rotate 3 node one is x, left child of x and next is left of left of x 
+			//or right of left of x
+			
 			//now i may have to do ll rotate or lr rotate
 			if (height(x->left->left) >= height(x->left->right)) {
 				//perform ll rotate
@@ -213,15 +205,8 @@ public:
 			}
 		}
 		else if (height(x->right) - height(x->left) >= 2) {
-			//when left has more height than right
-			//we have to rotate 3 node one is x
-			//other is higher children of x
-			//next is higher children of higher children of x
-
-			//now i may have to do rr rotate or rl rotate
 			if (height(x->right->right) > height(x->right->left)) {
 				//perform rr rotate
-
 				x = singleLeftRotate(x);
 			}
 			else if (height(x->right->right) < height(x->right->left)) {
@@ -229,9 +214,7 @@ public:
 				x = doubleLeftRotate(x);
 			}
 		}
-
 		return x;
-
 	}
 };
 
