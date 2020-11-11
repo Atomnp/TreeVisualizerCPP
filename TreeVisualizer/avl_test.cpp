@@ -7,7 +7,7 @@
 #undef main
 
 void createTree(AVL& avl) {
-    std::vector<int>arr =generateRandomArray(20);
+    std::vector<int>arr = {75,99,66,48,2,57,17,41,72,33,90,66,18,27,35,82,13,78,51};
     printArray(arr);
     info::timeMilli = 10;
     for (auto elm : arr) {

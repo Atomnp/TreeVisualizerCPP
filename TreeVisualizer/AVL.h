@@ -27,6 +27,7 @@ public:
 		root = nullptr;
 	}
 	void insert(int n) {
+		info::currentInsertingItem = n;
 		root = insert(root, n);
 	}
 	int height(AVLNode* x) {

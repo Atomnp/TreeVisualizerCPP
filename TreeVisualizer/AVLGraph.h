@@ -93,12 +93,12 @@ public:
 
         //maximum amount of nodes possible in given height
         //we store all those in queue also null ptr because nullptr helps us in determining the x position
-        int maxCount = pow(2, treeHeight) - 1;
+        int maxCount = 31;
         //count starting from one to sync with getPost function
         int count = 1;
-        while (count < maxCount) {
+        while (count <= maxCount) {
             //to avoid deleted pointer being reference
-            if (info::deleting)return;
+            //if (info::deleting)return;
             auto node = queue.front();
             queue.pop();
 
