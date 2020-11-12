@@ -144,13 +144,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
-    <ClInclude Include="AVL.h" />
-    <ClInclude Include="AVLGraph.h" />
-    <ClInclude Include="bst.h" />
-    <ClInclude Include="BSTGraph.h" />
+    <ClInclude Include="Trees\AVL.h" />
+    <ClInclude Include="Trees\bst.h" />
+    <ClInclude Include="graph.h" />
     <ClInclude Include="info.h" />
-    <ClInclude Include="RBTGraph.h" />
-    <ClInclude Include="RedBlackTree.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Trees\RedBlackTree.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vendors\GLEW\include\GL\eglew.h" />
     <ClInclude Include="vendors\GLEW\include\GL\glew.h" />
@@ -251,7 +250,7 @@
     <ClInclude Include="vendors\SDL2\SDL2-2.0.12\include\SDL_vulkan.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="avl_test.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="vendors\imgui\imgui.cpp" />
     <ClCompile Include="vendors\imgui\imgui_demo.cpp" />
     <ClCompile Include="vendors\imgui\imgui_draw.cpp" />

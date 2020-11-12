@@ -1,106 +1,131 @@
-
 #include "app.h"
-#include "bst.h"
 #include "utils.h"
-#include "BSTGraph.h"
-#include "app.h"
+#include "graph.h"
 #undef main
 
-//void move(BSTGraph &bg,SDL_Rect &rec) {
-//   
-//    bg.moveAndAnimate(rec, Point(500, 500));
-//}
-
-
-void createTree(BST& bst) {
-    //all this drama is to produce a tree whose height is less than 5 otherwise it wont fit on screen
-    /*info::timeMilli = 0;
-    std::vector<int>arr;
-    int temp = bst.treeHeight();
-    while (bst.treeHeight() > 5 or bst.treeHeight() == 0) {
-        bst.clear();
-        arr = generateRandomArray(10);
-        printArray(arr);
-        for (auto elm : arr) {
-            bst.insert(elm);
-        }
-       
-    }
-    bst.clear();*/
-
-    //actual tree creation code
-    std::vector<int>arr = { 47, 94, 8, 75, 47, 23, 23, 14, 48, 90 };
-    info::timeMilli = 10;
-    for (auto elm : arr) {
-        bst.insert(elm);
-    } 
+void createTree(BinarySearchTree*& tree) {
+	std::vector<int>arr = generateRandomArray(20);
+	printArray(arr);
+	info::timeMilli = 10;
+	for (auto elm : arr) {
+		tree->insert(elm);
+	}
 }
 
-void insertItem(BST &bst,int value) {
-    bst.insert(value);
-    info::currentNode = nullptr;
+void insertItem(BinarySearchTree*& tree, int value) {
+	tree->insert(value);
+	info::currentNode = nullptr;
 }
-void removeItem(BST& bst, int value) {
-    bst.remove(value);
-    info::currentNode = nullptr;
+void removeItem(BinarySearchTree*& tree, int value) {
+	tree->remove(value);
+	info::currentNode = nullptr;
 }
 void App::run() {
- 
-    BST bst;
-    BSTGraph bg;
-    if (!info::treeThreadActive) {
-        t1 = std::thread(createTree, std::ref(bst));
-        info::treeThreadActive = true;
-    } 
-    SDL_Rect rec = { 100,100,100,100 };
+	BinarySearchTree* tree = new AVL();
+	Graph graph;
+	while (!info::done) {
 
-    while (!info::done) {
-       
-        handleEvents();
-        ClearScreen();
-        bg.draw(bst, renderer);
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(window);
-        ImGui::NewFrame();
-        bool b = false;
-        
-        //ImGui::ShowDemoWindow();
+		handleEvents();
+		ClearScreen();
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame(window);
+		ImGui::NewFrame();
+		bool b = false;
 
-        ImGui::SetNextWindowPos(ImVec2(0, SCREEN_HEIGHT - CONTROL_MENU_HEIGHT));
-        ImGui::SetNextWindowSize(ImVec2(CONTROL_MENU_WIDTH, CONTROL_MENU_HEIGHT));
-        info::windowFlags |= ImGuiWindowFlags_NoResize;
-        
-        ImGui::Begin("Controller", &b, info::windowFlags);
-            static int valueToInsert = 123;
-            ImGui::InputInt("Item To Insert", &valueToInsert);
-            ImGui::SameLine();
-            if (ImGui::Button("insert")) {
-            //when this key is pressed insert should happen;
-            if (t1.joinable()) {
-                info::timeMilli = 0;
-                t1.join();
-            }
-            info::timeMilli = 10;
-            t1 = std::thread(insertItem,std::ref(bst),valueToInsert);
-            }
+		//ImGui::ShowDemoWindow();
 
-            static int valueToRemove = 0;
-            ImGui::InputInt("Item To Remove", &valueToRemove);
-            ImGui::SameLine();
-            if (ImGui::Button("Remove")) {
-                //when this key is pressed insert should happen;
-                if (t1.joinable()) {
-                    info::timeMilli = 0;
-                    t1.join();
-                }
-                info::timeMilli = 10;
-                t1 = std::thread(removeItem, std::ref(bst), valueToRemove);
-            }           
-            ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(0, SCREEN_HEIGHT - CONTROL_MENU_HEIGHT));
+		ImGui::SetNextWindowSize(ImVec2(CONTROL_MENU_WIDTH, CONTROL_MENU_HEIGHT));
+		info::windowFlags |= ImGuiWindowFlags_NoResize;
 
-        render();
-    }
+		ImGui::Begin("Controller", &b, info::windowFlags);
+		static int valueToInsert = 123;
+		ImGui::InputInt("Item To Insert", &valueToInsert);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset")) {
+			switch (info::currentTree)
+			{
+			//case for bst
+			case 0:
+				if (t1.joinable()) {
+					info::timeMilli = 0;
+					t1.join();
+				}
+				delete tree;
+				tree = new BST();
+				break;
+			//case for avl tree
+			case 1:
+				if (t1.joinable()) {
+					info::timeMilli = 0;
+					t1.join();
+				}
+				delete tree;
+				tree = new AVL();
+				break;
+			//case for red black tree
+			case 2:
+				if (t1.joinable()) {
+					info::timeMilli = 0;
+					t1.join();
+				}
+				delete tree;
+				tree = new RedBlackTree();
+				break;
+			default:
+				break;
+			}
+			info::treeThreadActive = false;
+
+		}
+		if (!info::treeThreadActive) {
+			t1 = std::thread(createTree, std::ref(tree));
+			info::treeThreadActive = true;
+		}
+		if (info::treeThreadActive) {
+			graph.draw(tree, renderer);
+
+		}
+
+		if (ImGui::Button("insert")) {
+			//when this key is pressed insert should happen;
+			if (t1.joinable()) {
+				info::timeMilli = 0;
+				t1.join();
+			}
+			info::timeMilli = 10;
+			t1 = std::thread(insertItem, std::ref(tree), valueToInsert);
+		}
+
+		static int valueToRemove = 0;
+		ImGui::InputInt("Item To Remove", &valueToRemove);
+		ImGui::SameLine();
+		if (ImGui::Button("Remove")) {
+			//when this key is pressed insert should happen;
+			if (t1.joinable()) {
+				info::timeMilli = 0;
+				t1.join();
+			}
+			info::timeMilli = 10;
+			t1 = std::thread(removeItem, std::ref(tree), valueToRemove);
+		}
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH - SORTING_MENU_WIDTH, 0));
+		ImGui::SetNextWindowSize(ImVec2(SORTING_MENU_WIDTH, SORTING_MENU_HEIGHT));
+
+		ImGui::Begin("TREE", NULL, info::windowFlags);
+		const char* items[] = {
+			"Binary Search Tree",
+			"AVL tree",
+			"Red Black Tree",
+		};
+		ImGui::ListBox("", &info::currentTree, items, IM_ARRAYSIZE(items), IM_ARRAYSIZE(items));
+		ImGui::End();
+
+		render();
+	}
 }
 
 

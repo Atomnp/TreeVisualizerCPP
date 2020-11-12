@@ -5,18 +5,9 @@
 
 #include <mutex>
 #include "info.h"
+#include "Node.h"
 
-struct Node {
-	int data;
-	Node* left;
-	Node* right;
-	Node(int x) :data(x) {
-		left = nullptr;
-		right = nullptr;
-	}
-};
-
-class BST {
+class BST :public BinarySearchTree {
 
 private:	
 	int count;
@@ -89,14 +80,15 @@ private:
 		}
 	}
 public:
+	Node* getRoot() override { return root; }
 	int getCount() { return count; }
 	Node* root;
 	BST() :root(nullptr), count(0) {}
-	void insert(int x) {
+	void insert(int x) override {
 		root=insert(root, x);
 		count++;
 	}
-	void remove(int x) {
+	void remove(int x) override {
 		root=remove(root, x);
 		count--;
 	}

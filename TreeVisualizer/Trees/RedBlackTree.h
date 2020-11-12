@@ -3,32 +3,14 @@
 #include <iostream>
 #include "info.h"
 #include <mutex>
-struct RBTNode {
 
-	//for graphics
-	int height;
-	//for pure data structure
-	int data;
-	RBTNode* left;
-	RBTNode* right;
-	bool isRed;
-
-	RBTNode(int data) :data(data) {
-		isRed = true;
-		left = nullptr;
-		right = nullptr;
-
-	}
-};
-class RedBlackTree
+class RedBlackTree :public BinarySearchTree
 {
 private:
 	std::mutex m;
-
+	Node* root;
 public:
-	
-	RBTNode* root;
-public:
+	Node* getRoot()override { return root; }
 
 	RedBlackTree() {
 		root = nullptr;
@@ -40,13 +22,13 @@ public:
 		root->isRed = false;
 	}
 
-	void flipColors(RBTNode* node) {
+	void flipColors(Node* node) {
 		printf("flip color");
 		node->left->isRed =!node->left->isRed;
 		node->right->isRed = !node->right->isRed;
 		node->isRed = node == root ? false:true;
 	}
-	bool isRed(RBTNode* node) {
+	bool isRed(Node* node) {
 		if (node == nullptr)return false;
 		return node->isRed;
 	}
@@ -63,11 +45,11 @@ public:
 		// Pass initial space count as 0  
 		//print2DUtil(root, 0);
 	}
-	RBTNode* insert(RBTNode* x, int n) {
-		info::rbtnode = x;
+	Node* insert(Node* x, int n) {
+		info::currentNode = x;
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		if (x == nullptr) {
-			x = new RBTNode(n);
+			x = new Node(n);
 			if (root == nullptr)x->isRed = false;
 			return x;
 		}
@@ -91,9 +73,9 @@ public:
 		}
 		return x;
 	}
-	RBTNode* singleRightRotate(RBTNode* x) {
+	Node* singleRightRotate(Node* x) {
 
-		RBTNode* temp = x->left;
+		Node* temp = x->left;
 		bool  tempc = x->left->isRed;
 		x->left = temp->right;
 		
@@ -105,10 +87,10 @@ public:
 		return temp;
 
 	}
-	RBTNode* singleLeftRotate(RBTNode* x) {
+	Node* singleLeftRotate(Node* x) {
 
 
-		RBTNode* temp = x->right;
+		Node* temp = x->right;
 		bool  tempc = x->right->isRed;
 		x->right = temp->left;
 		temp->isRed = x->isRed;
@@ -122,7 +104,7 @@ public:
 		if (i <= j)return j;
 		return i;
 	}
-	RBTNode* findMin(RBTNode* t) {
+	Node* findMin(Node* t) {
 		if (t == nullptr)
 			return nullptr;
 		else if (t->left == nullptr)
@@ -131,7 +113,7 @@ public:
 			return findMin(t->left);
 	}
 
-	RBTNode* findMax(RBTNode* t) {
+	Node* findMax(Node* t) {
 		if (t == nullptr)
 			return nullptr;
 		else if (t->right == nullptr)
@@ -139,15 +121,15 @@ public:
 		else
 			return findMax(t->right);
 	}
-	void printInorder(RBTNode* x) {
+	void printInorder(Node* x) {
 		if (x == nullptr)return;
 		printInorder(x->left);
 		//std::cout << x->data << " ";
 		printInorder(x->right);
 	}
 
-	RBTNode* remove(RBTNode* x, int n) {
-		info::rbtnode = x;
+	Node* remove(Node* x, int n) {
+		info::currentNode = x;
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 		//when element is not found in the tree
 		if (x == nullptr)return nullptr;
@@ -169,7 +151,7 @@ public:
 			info::deleting = true;
 			//if both child are present
 			if (x->left && x->right) {
-				RBTNode* temp = x;
+				Node* temp = x;
 				x->right->left = x->left->right;
 				x->left->right = x->right;
 				x = x->left;
@@ -182,18 +164,16 @@ public:
 			}
 			//when only right child is present
 			else if (x->left == nullptr) {
-				RBTNode* temp = x;
+				Node* temp = x;
 				x = x->right;
 				delete temp;
 			}
 			//when only left child is present
 			else if (x->right == nullptr) {
-				RBTNode* temp = x;
+				Node* temp = x;
 				x = x->left;
 				delete temp;
 			}
-			
-
 		}
 
 		if (isRed(x->right) && !isRed(x->left))x = singleLeftRotate(x);

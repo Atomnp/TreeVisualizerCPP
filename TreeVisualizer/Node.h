@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
 
-struct Node {
-
+class Node {
+public:
 	//for graphics
 	int height;
 	//for pure data structure
@@ -11,7 +11,7 @@ struct Node {
 	Node* right;
 	bool isRed;
 
-	Node(int data):data(data){
+	Node(int data):data(data),height(0){
 		isRed = true;
 		left = nullptr;
 		right = nullptr;

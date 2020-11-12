@@ -309,28 +309,25 @@
     <ClInclude Include="app.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bst.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BSTGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RBTGraph.h">
+    <ClInclude Include="Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RedBlackTree.h">
+    <ClInclude Include="graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AVLGraph.h">
+    <ClInclude Include="Trees\bst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AVL.h">
+    <ClInclude Include="Trees\AVL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trees\RedBlackTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -356,7 +353,7 @@
     <ClCompile Include="vendors\imgui\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="avl_test.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

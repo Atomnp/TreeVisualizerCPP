@@ -9,7 +9,10 @@
 
 #include "info.h"
 #include "utils.h"
-#include "RedBlackTree.h"
+#include "./Trees/AVL.h"
+#include "./Trees/bst.h"
+#include "./Trees/RedBlackTree.h"
+
 
 struct Point {
     int x;
@@ -17,7 +20,7 @@ struct Point {
     Point(int x, int y) :x(x), y(y) {}
 };
 
-class RBTGraph {
+class Graph {
 private:
     const int rectWidth = 2 * 2 * 8;
     const int rectHeight = 2 * 2 * 8;
@@ -31,16 +34,18 @@ private:
     SDL_Color color;
 public:
 
-    RBTGraph() {
+    Graph() {
         TTF_Init();
-        font = TTF_OpenFont("Sans.ttf", 24); //this opens a font style and sets a size
+        font = TTF_OpenFont("./res/Sans.ttf", 24); //this opens a font style and sets a size
         color = { 255, 255, 255 };
     }
 
     //height from top or root
+    //calculates what should be the gap between nodes at given height
     int gapAtHeight(int h) {
         return lastGap * pow(2, treeHeight - h + 1);
     }
+    //calculate initial offset of the each height
     int initialOffsetAT(int height) {
 
         if (height == treeHeight)return 0;
@@ -49,6 +54,7 @@ public:
         }
         return initialOffsetAT(height + 1) + (rectWidth + (gapAtHeight(height + 1))) / 2 - rectWidth / 2;
     }
+    //returns the position of the node based on its count
     Point getPos(int count) {
         //1,2,3 represent count this function calculates position based on its count
         //                 1
@@ -61,50 +67,40 @@ public:
         int y = height * (VerticalGap + rectHeight);
         return Point(x, y);
     }
-    //void move(int count1, int count2) {
-    //    Point p2 = getPos(count2);
-    //    Point p1 = getPos(count1);
-    //    int slope = (p2.y - p1.y) / (p2.x - p1.x);
-    //    int c = p1.y - slope * p1.x;
-    //    while (p1.x != p2.x) {
-    //        printf("print move and animate");
-    //        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    //        if (p1.x < p2.x) {
-    //            p1.x++;
-    //        }
-    //        else {
-    //            p1.x--;
-    //        }
-    //        p1.y = slope * p1.x + c;
-    //    }
-    void draw(RedBlackTree& rbt, SDL_Renderer* renderer) {
-        //if there is no item in the rbt
-        if (rbt.root == nullptr or info::deleting)return;
+    void draw(BinarySearchTree* tree, SDL_Renderer* renderer) {
 
+        //can only animate up to 5 tree height
         treeHeight = 5;
+        //if there is no item in the av
+        if (tree==nullptr or tree->getRoot() == nullptr)return;
+
         if (!info::treeThreadActive)return;
 
         //for message display
-
         SDL_Rect rec;
         surfaceMessage = TTF_RenderText_Solid(font, std::to_string(info::currentInsertingItem).c_str(), color);
         message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
         rec.x = 1280 - 500;
         rec.y = 500;
-        rec.w = 200-10;
+        rec.w = 200 - 10;
         rec.h = 50;
         SDL_RenderCopy(renderer, message, NULL, &rec);
         SDL_FreeSurface(surfaceMessage);
         SDL_DestroyTexture(message);
-
         SDL_Rect rect;
-        std::queue<RBTNode*>queue;
-        queue.push(rbt.root);
+        std::queue<Node*>queue;
+        queue.push(tree->getRoot());
 
-        int maxCount = pow(2, treeHeight) - 1;
+
+        //maximum amount of nodes possible in given height
+        //we store all those in queue also null ptr because nullptr helps us in determining the x position
+        int maxCount = 31;
+        //count starting from one to sync with getPost function
         int count = 1;
-        while (count < maxCount) {
+        while (count <= maxCount) {
+            //to avoid deleted pointer being reference
+            //if (info::deleting)return;
             auto node = queue.front();
             queue.pop();
 
@@ -116,19 +112,25 @@ public:
                 auto p = getPos(count);
                 getRectangle(rect, p.x, p.y, rectWidth, rectHeight);
 
-                surfaceMessage = TTF_RenderText_Solid(font, std::to_string(node->data).c_str(), color);
+                try {
+                    surfaceMessage = TTF_RenderText_Solid(font, std::to_string(node->data).c_str(), color);
+                }
+                catch (std::exception e) {
+                    printf("exception thrown");
+                    return;
+                }
                 message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-
-                if (node->isRed) {
+                if (info::currentTree==2 and node->isRed) {
                     SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
                 }
-                if (node == info::rbtnode) {
+
+                if (node == info::currentNode) {
                     SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255);
 
                 }
                 SDL_RenderFillCircle(renderer, rect.x + rectWidth / 2, rect.y + rectHeight / 2, rectHeight / 2 + 5);
                 SDL_RenderCopy(renderer, message, NULL, &rect);
-                //free surface and textr
+                //free surface and texture
                 SDL_FreeSurface(surfaceMessage);
                 SDL_DestroyTexture(message);
 
@@ -136,27 +138,24 @@ public:
                 queue.push(node->left);
                 queue.push(node->right);
 
-                if (node == info::rbtnode) SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255);
-                //if (node->isRed) SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
-                //left to right
+                if (node == info::currentNode) SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255);
+
+                //this code is for drawing the line based on the count of the node
+                //left to right (/)
                 if (count % 2 == 0) {
                     Point from = Point(p.x + rectWidth, p.y);
                     int countOfParent = count / 2;
                     Point ParentPos = getPos(countOfParent);
                     Point to = Point(ParentPos.x, ParentPos.y + rectHeight);
-                    /* int parentX = from.x + (gapAtHeight(node->height) - rectWidth) / 2 - rectWidth / 2;*/
-                     //Point to = Point(parentX, p.y - VerticalGap);
                     SDL_RenderDrawLine(renderer, from.x, from.y, to.x, to.y);
                 }
+                //to draw line from right to left (\)
                 else {
                     Point from = Point(p.x, p.y);
                     int countOfParent = count / 2;
-                    //not to draw line at the top of root node
                     if (countOfParent > 0) {
                         Point ParentPos = getPos(countOfParent);
                         Point to = Point(ParentPos.x + rectWidth, ParentPos.y + rectHeight);
-                        /*  int parentX = from.x - (gapAtHeight(node->height) - rectWidth) / 2 + rectWidth / 2;
-                          Point to = Point(parentX, p.y - VerticalGap);*/
                         SDL_RenderDrawLine(renderer, from.x, from.y, to.x, to.y);
                     }
 
