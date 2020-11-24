@@ -4,13 +4,13 @@
 static const int SCREEN_WIDTH = 1280;
 static const int SCREEN_HEIGHT = 720;
 
-
 static const int CONTROL_MENU_WIDTH = SCREEN_WIDTH;
 static const int CONTROL_MENU_HEIGHT = 150;
 
 static const int SORTING_MENU_WIDTH = 200;
 static const int SORTING_MENU_HEIGHT = SCREEN_HEIGHT - CONTROL_MENU_HEIGHT;
 
+//base class for bst, avl and RBT
 class BinarySearchTree {
 public:
 	virtual Node* getRoot() = 0;
