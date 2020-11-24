@@ -104,13 +104,13 @@ public:
 		if (i <= j)return j;
 		return i;
 	}
-	Node* findMin(Node* t) {
+	Node* findMinNode(Node* t) {
 		if (t == nullptr)
 			return nullptr;
 		else if (t->left == nullptr)
 			return t;
 		else
-			return findMin(t->left);
+			return findMinNode(t->left);
 	}
 
 	Node* findMax(Node* t) {
@@ -120,6 +120,12 @@ public:
 			return t;
 		else
 			return findMax(t->right);
+	}
+	void deleteMinimum(Node* node) {
+		//if minimum node is reached i.e left is nullptr then
+		if (node->left == nullptr) {
+
+		}
 	}
 	void printInorder(Node* x) {
 		if (x == nullptr)return;
@@ -152,10 +158,10 @@ public:
 			//if both child are present
 			if (x->left && x->right) {
 				Node* temp = x;
-				x->right->left = x->left->right;
-				x->left->right = x->right;
-				x = x->left;
-				delete temp;
+				auto minNode = findMinNode(x->right);
+				x->data = minNode->data;
+				x->right = remove(x->right, minNode->data);
+				info::deleting = false;
 			}
 			//when deleting node is leaf node
 			else if (x->left == nullptr and x->right == nullptr) {

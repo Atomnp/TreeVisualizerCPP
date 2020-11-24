@@ -6,7 +6,7 @@
 void createTree(BinarySearchTree*& tree) {
 	std::vector<int>arr = generateRandomArray(20);
 	printArray(arr);
-	info::timeMilli = 10;
+	info::timeMilli = 100;
 	for (auto elm : arr) {
 		tree->insert(elm);
 	}
@@ -40,9 +40,6 @@ void App::run() {
 		info::windowFlags |= ImGuiWindowFlags_NoResize;
 
 		ImGui::Begin("Controller", &b, info::windowFlags);
-		static int valueToInsert = 123;
-		ImGui::InputInt("Item To Insert", &valueToInsert);
-		ImGui::SameLine();
 		if (ImGui::Button("Reset")) {
 			switch (info::currentTree)
 			{
@@ -87,14 +84,16 @@ void App::run() {
 			graph.draw(tree, renderer);
 
 		}
-
+		static int valueToInsert = 123;
+		ImGui::InputInt("Item To Insert", &valueToInsert);
+		ImGui::SameLine();
 		if (ImGui::Button("insert")) {
 			//when this key is pressed insert should happen;
 			if (t1.joinable()) {
 				info::timeMilli = 0;
 				t1.join();
 			}
-			info::timeMilli = 10;
+			info::timeMilli = 100;
 			t1 = std::thread(insertItem, std::ref(tree), valueToInsert);
 		}
 
@@ -111,7 +110,6 @@ void App::run() {
 			t1 = std::thread(removeItem, std::ref(tree), valueToRemove);
 		}
 		ImGui::End();
-
 		ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH - SORTING_MENU_WIDTH, 0));
 		ImGui::SetNextWindowSize(ImVec2(SORTING_MENU_WIDTH, SORTING_MENU_HEIGHT));
 
@@ -123,11 +121,9 @@ void App::run() {
 		};
 		ImGui::ListBox("", &info::currentTree, items, IM_ARRAYSIZE(items), IM_ARRAYSIZE(items));
 		ImGui::End();
-
 		render();
 	}
 }
-
 
 int main() {
 	auto app = new App();
