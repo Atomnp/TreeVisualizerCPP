@@ -26,6 +26,6 @@ namespace info {
 	int timeMilli;
 	int windowFlags = 0;
 	std::string displayMessage = "Binary Search Tree";
-	std::atomic<bool>deleting=false;
+	std::atomic<bool>deleting(false);
 	int currentTree = 1;
 }

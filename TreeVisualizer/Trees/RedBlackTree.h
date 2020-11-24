@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "info.h"
+#include "../info.h"
 #include <mutex>
 
 class RedBlackTree :public BinarySearchTree

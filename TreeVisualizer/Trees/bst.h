@@ -4,8 +4,8 @@
 #include <chrono>
 
 #include <mutex>
-#include "info.h"
-#include "Node.h"
+#include "../info.h"
+#include "../Node.h"
 
 class BST :public BinarySearchTree {
 

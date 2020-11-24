@@ -1,9 +1,9 @@
 #pragma once
-#include "info.h"
+#include "../info.h"
 #include <chrono>
 #include<thread>
 #include <iostream>
-#include "Node.h"
+#include "../Node.h"
 
 class AVL: public BinarySearchTree
 {
