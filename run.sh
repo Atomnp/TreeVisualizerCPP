@@ -1,4 +1,3 @@
-cd build 
-./TreeVisualizer
+cd TreeVisualizer 
+../build/TreeVisualizer
 cd ..
-
