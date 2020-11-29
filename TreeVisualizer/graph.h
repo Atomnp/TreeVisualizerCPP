@@ -6,7 +6,6 @@
 #include <cmath>
 #include <string>
 
-
 #include "info.h"
 #include "utils.h"
 #include "./Trees/AVL.h"
@@ -36,7 +35,7 @@ public:
 
     Graph() {
         TTF_Init();
-        font = TTF_OpenFont("./res/Sans.ttf", 24); //this opens a font style and sets a size
+        font = TTF_OpenFont("./res/Roboto-Black.ttf", 24); //this opens a font style and sets a size
         color = { 255, 255, 255 };
     }
 
@@ -78,8 +77,15 @@ public:
 
         //for message display
         SDL_Rect rec;
-        surfaceMessage = TTF_RenderText_Solid(font, std::to_string(info::currentInsertingItem).c_str(), color);
-        message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+        if(font!=NULL){
+            surfaceMessage = TTF_RenderText_Solid(font, std::to_string(info::currentInsertingItem).c_str(), color);
+            message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+        }
+        else{
+            std::cout<<"font is null"<<std::endl;
+            printf("TTF_OpenFont: %s\n", TTF_GetError());
+            exit(0);
+        }
 
         rec.x = 1280 - 500;
         rec.y = 500;
@@ -130,7 +136,7 @@ public:
                 }
                 SDL_RenderFillCircle(renderer, rect.x + rectWidth / 2, rect.y + rectHeight / 2, rectHeight / 2 + 5);
                 SDL_RenderCopy(renderer, message, NULL, &rect);
-                //free surface and texture
+                // free surface and texture
                 SDL_FreeSurface(surfaceMessage);
                 SDL_DestroyTexture(message);
 
