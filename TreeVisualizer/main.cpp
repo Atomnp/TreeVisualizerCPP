@@ -3,8 +3,8 @@
 #include "graph.h"
 #undef main
 
-void createTree(BinarySearchTree*& tree) {
-	std::vector<int>arr = generateRandomArray(20);
+void createTree(BinarySearchTree*& tree,int numberOfItems) {
+	std::vector<int>arr = generateRandomArray(numberOfItems);
 	printArray(arr);
 	info::timeMilli = 100;
 	for (auto elm : arr) {
@@ -23,6 +23,7 @@ void removeItem(BinarySearchTree*& tree, int value) {
 void App::run() {
 	BinarySearchTree* tree = new AVL();
 	Graph graph;
+	
 	while (!info::done) {
 
 		handleEvents();
@@ -39,7 +40,11 @@ void App::run() {
 		ImGui::SetNextWindowSize(ImVec2(CONTROL_MENU_WIDTH, CONTROL_MENU_HEIGHT));
 		info::windowFlags |= ImGuiWindowFlags_NoResize;
 
+
+		
 		ImGui::Begin("Controller", &b, info::windowFlags);
+		ImGui::InputInt("Number of items", &info::numberOfItems);
+		ImGui::SameLine();
 		if (ImGui::Button("Reset")) {
 			switch (info::currentTree)
 			{
@@ -77,7 +82,7 @@ void App::run() {
 
 		}
 		if (!info::treeThreadActive) {
-			t1 = std::thread(createTree, std::ref(tree));
+			t1 = std::thread(createTree, std::ref(tree),info::numberOfItems);
 			info::treeThreadActive = true;
 		}
 		if (info::treeThreadActive) {

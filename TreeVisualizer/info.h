@@ -28,4 +28,5 @@ namespace info {
 	std::string displayMessage = "Binary Search Tree";
 	std::atomic<bool>deleting(false);
 	int currentTree = 1;
+	int numberOfItems=10;
 }
