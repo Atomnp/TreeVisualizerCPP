@@ -3,7 +3,6 @@
 #include <thread>
 #include <chrono>
 
-#include <mutex>
 #include "../info.h"
 #include "../Node.h"
 
@@ -32,8 +31,12 @@ private:
 	}
 
 	Node* insert(Node* r, int x) {
-		info::currentNode = r;
-		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
+		if(r!=nullptr){
+			info::currentNode = r;
+			std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
+		}
+		// info::currentNode = r;
+		// std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		if (r == nullptr) {
 			Node* newNode = new Node(x);
 			return newNode;
@@ -85,8 +88,10 @@ public:
 	Node* root;
 	BST() :root(nullptr), count(0) {}
 	void insert(int x) override {
+		info::currentInsertingItem = x;
 		root=insert(root, x);
 		count++;
+		info::currentNode=nullptr;
 	}
 	void remove(int x) override {
 		root=remove(root, x);

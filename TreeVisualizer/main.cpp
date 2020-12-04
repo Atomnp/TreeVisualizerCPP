@@ -3,28 +3,32 @@
 #include "graph.h"
 #undef main
 
-void createTree(BinarySearchTree*& tree,int numberOfItems) {
-	std::vector<int>arr = generateRandomArray(numberOfItems);
+void createTree(BinarySearchTree *&tree, int numberOfItems)
+{
+	std::vector<int> arr = generateRandomArray(numberOfItems);
 	printArray(arr);
-	info::timeMilli = 100;
-	for (auto elm : arr) {
+	for (auto elm : arr)
+	{
 		tree->insert(elm);
 	}
 }
-
-void insertItem(BinarySearchTree*& tree, int value) {
+void insertItem(BinarySearchTree *&tree, int value)
+{
 	tree->insert(value);
 	info::currentNode = nullptr;
 }
-void removeItem(BinarySearchTree*& tree, int value) {
+void removeItem(BinarySearchTree *&tree, int value)
+{
 	tree->remove(value);
 	info::currentNode = nullptr;
 }
-void App::run() {
-	BinarySearchTree* tree = new AVL();
+void App::run()
+{
+	BinarySearchTree *tree = new AVL();
 	Graph graph;
-	
-	while (!info::done) {
+
+	while (!info::done)
+	{
 
 		handleEvents();
 		ClearScreen();
@@ -40,86 +44,90 @@ void App::run() {
 		ImGui::SetNextWindowSize(ImVec2(CONTROL_MENU_WIDTH, CONTROL_MENU_HEIGHT));
 		info::windowFlags |= ImGuiWindowFlags_NoResize;
 
-
-		
 		ImGui::Begin("Controller", &b, info::windowFlags);
-		ImGui::InputInt("Number of items", &info::numberOfItems);
+		std::cout<<"tree thread active is"<<info::treeThreadActive<<std::endl;
+		ImGui::SliderInt("Number of Items", &info::numberOfItems, 1, 30);	
 		ImGui::SameLine();
-		if (ImGui::Button("Reset")) {
+
+		if (ImGui::Button("Reset"))
+		{
+			if (t1.joinable()){
+				int temp = info::timeMilli;
+				info::timeMilli = 0;
+				t1.join();
+				info::timeMilli = temp;
+			}
+			info::treeThreadActive = false;
+			delete tree;
 			switch (info::currentTree)
 			{
 			//case for bst
 			case 0:
-				if (t1.joinable()) {
-					info::timeMilli = 0;
-					t1.join();
-				}
-				delete tree;
 				tree = new BST();
 				break;
 			//case for avl tree
 			case 1:
-				if (t1.joinable()) {
-					info::timeMilli = 0;
-					t1.join();
-				}
-				delete tree;
 				tree = new AVL();
 				break;
 			//case for red black tree
 			case 2:
-				if (t1.joinable()) {
-					info::timeMilli = 0;
-					t1.join();
-				}
-				delete tree;
 				tree = new RedBlackTree();
 				break;
 			default:
 				break;
 			}
-			info::treeThreadActive = false;
-
 		}
-		if (!info::treeThreadActive) {
-			t1 = std::thread(createTree, std::ref(tree),info::numberOfItems);
+		if (!info::treeThreadActive)
+		{	
 			info::treeThreadActive = true;
+			t1 = std::thread(createTree, std::ref(tree), info::numberOfItems);
+			
 		}
-		if (info::treeThreadActive) {
+		if (info::treeThreadActive)
+		{
 			graph.draw(tree, renderer);
-
 		}
 		static int valueToInsert = 123;
 		ImGui::InputInt("Item To Insert", &valueToInsert);
 		ImGui::SameLine();
-		if (ImGui::Button("insert")) {
+		if (ImGui::Button("insert"))
+		{
 			//when this key is pressed insert should happen;
-			if (t1.joinable()) {
+			if (t1.joinable())
+			{
+				int temp = info::timeMilli;
 				info::timeMilli = 0;
 				t1.join();
+				info::timeMilli = temp;
 			}
-			info::timeMilli = 100;
 			t1 = std::thread(insertItem, std::ref(tree), valueToInsert);
 		}
 
 		static int valueToRemove = 0;
 		ImGui::InputInt("Item To Remove", &valueToRemove);
 		ImGui::SameLine();
-		if (ImGui::Button("Remove")) {
+		if (ImGui::Button("Remove"))
+		{
 			//when this key is pressed insert should happen;
-			if (t1.joinable()) {
+			if (t1.joinable())
+			{
+				int temp = info::timeMilli;
 				info::timeMilli = 0;
 				t1.join();
+				info::timeMilli = temp;
 			}
-			info::timeMilli = 10;
 			t1 = std::thread(removeItem, std::ref(tree), valueToRemove);
+		}
+		if (info::treeThreadActive)
+		{
+			ImGui::SliderInt("Delay", &info::timeMilli, 0, 1000);
 		}
 		ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH - SORTING_MENU_WIDTH, 0));
 		ImGui::SetNextWindowSize(ImVec2(SORTING_MENU_WIDTH, SORTING_MENU_HEIGHT));
 
 		ImGui::Begin("TREE", NULL, info::windowFlags);
-		const char* items[] = {
+		const char *items[] = {
 			"Binary Search Tree",
 			"AVL tree",
 			"Red Black Tree",
@@ -130,7 +138,8 @@ void App::run() {
 	}
 }
 
-int main() {
+int main()
+{
 	auto app = new App();
 	app->run();
 	return EXIT_SUCCESS;

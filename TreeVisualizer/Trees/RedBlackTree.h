@@ -2,12 +2,10 @@
 
 #include <iostream>
 #include "../info.h"
-#include <mutex>
 
 class RedBlackTree :public BinarySearchTree
 {
 private:
-	std::mutex m;
 	Node* root;
 public:
 	Node* getRoot()override { return root; }
@@ -47,7 +45,7 @@ public:
 	}
 	Node* insert(Node* x, int n) {
 		info::currentNode = x;
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		if (x == nullptr) {
 			x = new Node(n);
 			if (root == nullptr)x->isRed = false;
@@ -60,7 +58,7 @@ public:
 		else if (n > x->data) {
 			x->right = insert(x->right, n);
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		if (isRed(x->right) && !isRed(x->left)) {
 			x = singleLeftRotate(x);
 		}
@@ -136,7 +134,7 @@ public:
 
 	Node* remove(Node* x, int n) {
 		info::currentNode = x;
-		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		//when element is not found in the tree
 		if (x == nullptr)return nullptr;
 
@@ -144,13 +142,13 @@ public:
 		if (n < x->data) {
 			x->left = remove(x->left, n);
 			info::deleting = false;
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		}
 		//when delete node key is greater then key we are current standing at search right
 		else if (n > x->data) {
 			x->right = remove(x->right, n);
 			info::deleting = false;
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		}
 		//when we find the deleting node
 		else {
