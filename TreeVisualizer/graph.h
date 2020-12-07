@@ -62,7 +62,7 @@ public:
         int height = log2(count) + 1;
 
         int xOffset = count - pow(2, height - 1);
-        int x = initialOffsetAT(height) + xOffset * gapAtHeight(height);
+        int x = 20+initialOffsetAT(height) + xOffset * gapAtHeight(height);
         int y = height * (VerticalGap + rectHeight);
         return Point(x, y);
     }

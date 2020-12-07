@@ -52,7 +52,7 @@ void App::run()
 		info::windowFlags |= ImGuiWindowFlags_NoResize;
 
 		ImGui::Begin("Controller", &b, info::windowFlags);
-		std::cout<<"tree thread active is"<<info::treeThreadActive<<std::endl;
+		//std::cout<<"tree thread active is"<<info::treeThreadActive<<std::endl;
 		ImGui::SliderInt("Number of Items", &info::numberOfItems, 1, 30);	
 		ImGui::SameLine();
 
