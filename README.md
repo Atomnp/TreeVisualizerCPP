@@ -22,7 +22,7 @@ Contains visualization some Fundamental Tree Data Structure
 * then copy the dlls from vendor/dll directory to the directry where your executables are created and run the project again
 * now the project will run sucessfuly 
 
-##to run project in visual studio following step can be followed(Cmake Required)
+## To run project in Linux(Tested for Ubuntu) following step can be followed(Cmake Required)
 * clone or download project from github
 * from directory containing rebuild.sh run this script with ./rebuild.sh"
 * To run the program again run script with "./run.sh"
