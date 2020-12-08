@@ -24,6 +24,7 @@ public:
 		return x == nullptr ? -1 : x->height;
 	}
 	void remove(int n) override {
+		info::currentRemovingItem = n;
 		root = remove(root, n);
 		info::deleting = false;
 	}
@@ -32,10 +33,11 @@ public:
 
 		Node* temp = x->left;
 		x->left = temp->right;
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		temp->right = x;
 		x->height = max(height(x->left), height(x->right)) + 1;
 		temp->height = max(height(temp->left), x->height) + 1;
-
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		return temp;
 	}
 
@@ -43,9 +45,11 @@ public:
 
 		Node* temp = x->right;
 		x->right = temp->left;
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		temp->left = x;
 		x->height = max(height(x->left), height(x->right)) + 1;
 		temp->height = max(height(temp->right), x->height) + 1;
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		return temp;
 
 	}
@@ -55,10 +59,12 @@ public:
 	}
 	Node* doubleLeftRotate(Node* x) {
 		x->right = singleRightRotate(x->right);
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		return  singleLeftRotate(x);
 	}
 	Node* doubleRightRotate(Node* x) {
 		x->left = singleLeftRotate(x->left);
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		return singleRightRotate(x);
 	}
 
@@ -94,7 +100,7 @@ public:
 			x->right = insert(x->right, n);
 		}
 		x->height = max(height(x->left), height(x->right)) + 1;
-
+		std::this_thread::sleep_for(std::chrono::milliseconds(info::timeMilli));
 		if (height(x->left) - height(x->right) >= 2) {
 			//item was inserted to left of left
 			if (n <= x->left->data) {

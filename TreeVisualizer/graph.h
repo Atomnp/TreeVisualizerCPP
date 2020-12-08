@@ -76,25 +76,36 @@ public:
         if (!info::treeThreadActive)return;
 
         //for message display
-        SDL_Rect rec;
-        if(font!=NULL){
-            surfaceMessage = TTF_RenderText_Solid(font, std::to_string(info::currentInsertingItem).c_str(), color);
+        if(info::operation!="None"){
+            std::string operationText=info::operation=="insert"?"inserting":"removing";
+            std::string item= info::operation=="insert"?std::to_string(info::currentInsertingItem)
+                :std::to_string(info::currentRemovingItem);
+            surfaceMessage = TTF_RenderText_Solid(font,operationText.c_str() , color);
             message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-        }
-        else{
-            std::cout<<"font is null"<<std::endl;
-            printf("TTF_OpenFont: %s\n", TTF_GetError());
-            exit(0);
-        }
+            SDL_Rect rec1={50,50,70,30};
+            SDL_RenderCopy(renderer, message, NULL, &rec1);
+            SDL_FreeSurface(surfaceMessage);
+            SDL_DestroyTexture(message);
 
-        rec.x = 1280 - 500;
-        rec.y = 500;
-        rec.w = 200 - 10;
-        rec.h = 50;
-        SDL_RenderCopy(renderer, message, NULL, &rec);
-        SDL_FreeSurface(surfaceMessage);
-        SDL_DestroyTexture(message);
+            SDL_Rect rec={140,50,rectWidth,rectHeight};
+            if(font!=NULL){
+                surfaceMessage = TTF_RenderText_Solid(font, item.c_str(), color);
+                message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+            }
+            else{
+                std::cout<<"font is null"<<std::endl;
+                printf("TTF_OpenFont: %s\n", TTF_GetError());
+                exit(0);
+            }
+
+            SDL_SetRenderDrawColor(renderer, 200, 0, 0, 100);
+            SDL_RenderFillCircle(renderer, rec.x + rectWidth / 2, rec.y + rectHeight / 2, rectHeight / 2 + 5);
+            SDL_RenderCopy(renderer, message, NULL, &rec);
+            SDL_FreeSurface(surfaceMessage);
+            SDL_DestroyTexture(message);
+        }
         SDL_Rect rect;
+        SDL_SetRenderDrawColor(renderer, 200, 125, 0, 100);
         std::queue<Node*>queue;
         queue.push(tree->getRoot());
 

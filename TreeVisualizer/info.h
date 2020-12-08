@@ -20,10 +20,12 @@ public:
 };
 namespace info {
 	int currentInsertingItem;
+	int currentRemovingItem;
 	bool done = false;
 	bool treeThreadActive=false;
 	Node* currentNode;
 	int timeMilli;
+	std::string operation="None";
 	int windowFlags = 0;
 	std::string displayMessage = "Binary Search Tree";
 	std::atomic<bool>deleting(false);

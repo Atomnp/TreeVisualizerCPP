@@ -5,22 +5,29 @@
 
 void createTree(BinarySearchTree *&tree, int numberOfItems)
 {
+	info::operation="insert";
 	std::vector<int> arr = generateRandomArray(numberOfItems);
 	printArray(arr);
 	for (auto elm : arr)
 	{
 		tree->insert(elm);
 	}
+	info::operation="None";
+	// info::treeThreadActive=false;
 }
 void insertItem(BinarySearchTree *&tree, int value)
 {
+	info::operation="insert";
 	tree->insert(value);
 	info::currentNode = nullptr;
+	info::operation="None";
 }
 void removeItem(BinarySearchTree *&tree, int value)
 {
+	info::operation="remove";
 	tree->remove(value);
 	info::currentNode = nullptr;
+	info::operation="None";
 }
 void App::run()
 {
